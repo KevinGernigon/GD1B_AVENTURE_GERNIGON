@@ -112,7 +112,6 @@ class SceneTwo extends Phaser.Scene{
         this.input.gamepad.once('connected', function (pad) {
             paddle = pad;
             this.padConnected = true;
-            console.log('padConnected');
         });
         
         if (this.input.gamepad.total === 0){
@@ -143,8 +142,9 @@ class SceneTwo extends Phaser.Scene{
             ennemis.destroy();
             newSaphir = saphirs.create(ennemis.x, ennemis.y, 'saphir').setScale(0.3);
             newSaphir.setAcceleration(0, -250);
+            canCollect = false;
             setTimeout(function(){newSaphir.setAcceleration(0,200)}, 300);
-            setTimeout(function(){newSaphir.setAcceleration(0,0); newSaphir.setVelocityY(0)}, 1200);
+            setTimeout(function(){newSaphir.setAcceleration(0,0); newSaphir.setVelocityY(0); canCollect = true}, 1200);
         }
         
 
@@ -154,14 +154,15 @@ class SceneTwo extends Phaser.Scene{
                 //player.body.stop();
                 moving = false;
                 this.scene.start("sceneOne");
-                console.log("changement");
             }
         }
         
         //la thune
         function collecteSaphir(player, saphirs){
-            nombre_saphir = nombre_saphir +1;
-            saphirs.destroy();
+            if (canCollect){
+                nombre_saphir = nombre_saphir +1;
+                saphirs.destroy();
+            }
         }
         
         //perte de vie quand un monstre est touché et frame d'invincibilité
@@ -177,12 +178,14 @@ class SceneTwo extends Phaser.Scene{
         function collecteCoffre(player, items){
             items.destroy();
             for (let i = 1; i < 11; i++){
+                canCollect = false;
                 setTimeout(function(){newSaphir = saphirs.create(items.x, items.y, 'saphir').setScale(0.3)}, i*300);
                 setTimeout(function(){newSaphir.setVelocityY(-200)}, i*300);
                 setTimeout(function(){newSaphir.setVelocityY(200)}, i*300 + 150);
                 setTimeout(function(){newSaphir.setVelocityY(0)}, 300*(i+1) - 1);
                 //setTimeout(function(){if (newSaphir.y >= 670){newSaphir.setVelocityY(0); newSaphir.setAcceleration(0,0)}}, 300*i + 1000);
             }
+            setTimeout(function(){canCollect = true}, 3400);
 
         }
         
@@ -504,16 +507,13 @@ class SceneTwo extends Phaser.Scene{
             if(!hasFlute){
                 if (ennemi.body.blocked.right){
                     ennemi.setVelocityX(-100);
-                    console.log('blocked right');
                 }
                 else if (ennemi.body.blocked.left){
                     ennemi.setVelocityX(100);
-                    console.log('blocked left');
                 }
                 else if (moving == false){
                     ennemis.setVelocityX(-100);
                     moving = true;
-                    console.log('start moving');
                 }
             }
             else{

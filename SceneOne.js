@@ -52,6 +52,7 @@ var new_mur_4;
 var green_tiles;
 
 var moving = false;
+var canCollect;
 
 class SceneOne extends Phaser.Scene{
     constructor(){
@@ -144,7 +145,6 @@ class SceneOne extends Phaser.Scene{
             if (player.y >= 730 && player.x >= 400 && player.x <= 560){
                 //player.body.stop();
                 this.scene.start("sceneTwo");
-                console.log("changement");
             }
             if (player.x >= 912 && player.x <= 944 && player.y >= 336 && player.y <= 380){
                 this.scene.start("sceneThree");

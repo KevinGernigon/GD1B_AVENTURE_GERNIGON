@@ -183,8 +183,9 @@ class SceneFive extends Phaser.Scene{
             ennemis.destroy();
             newSaphir = saphirs.create(ennemis.x, ennemis.y, 'saphir').setScale(0.3);
             newSaphir.setAcceleration(0, -250);
+            canCollect = false;
             setTimeout(function(){newSaphir.setAcceleration(0,200)}, 300);
-            setTimeout(function(){newSaphir.setAcceleration(0,0); newSaphir.setVelocityY(0)}, 1200);
+            setTimeout(function(){newSaphir.setAcceleration(0,0); newSaphir.setVelocityY(0); canCollect = true}, 1200);
         }
         
         //perte de vie quand un monstre est touché et frame d'invincibilité
@@ -533,11 +534,9 @@ class SceneFive extends Phaser.Scene{
             if(!hasFlute){
                 if (ennemi.y <= 2073){
                     ennemi.setVelocityY(100);
-                    console.log('blocked up');
                 }
                 else if (ennemi.y >= 2470){
                     ennemi.setVelocityY(-100);
-                    console.log('blocked down');
                 }
                 else if (moving == false){
                     ennemis.setVelocityY(-100);
