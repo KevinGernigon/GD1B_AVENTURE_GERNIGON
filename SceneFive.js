@@ -1,115 +1,65 @@
-var player;
-var ennemis;
-var items;
-var coffres;
-var murs;
-var keys;
-
-var gamepad;
-var paddle;
-var padConnected;
-var pad;
-
-var player_hp = 5;
-var invincible = false;
-
-var full_heart_1;
-var full_heart_2;
-var full_heart_3;
-var full_heart_4;
-var full_heart_5;
-var empty_heart_1;
-var empty_heart_2;
-var empty_heart_3;
-var empty_heart_4;
-var empty_heart_5;
-
-var saphirs;
-var swing;
-var canSwing = false;
-var newSwing;
-var newSaphir;
-var saphirs_compte;
-var nombre_saphir = 0;
-var saphirs_icon;
-var gotSword = false;
-var sword_icon;
-
-var dash_icon;
-var canDash = false;
-var dash = 1;
-var justDashed = false;
-
-var flute;
-var hasFlute = false;
-
-var password = 0;
-var newItem;
-var new_mur_1;
-var new_mur_2;
-var new_mur_3;
-var new_mur_4;
-var green_tiles;
-
-class SceneOne extends Phaser.Scene{
+class SceneFive extends Phaser.Scene{
     constructor(){
-        super("sceneOne");
+        super("sceneFive");
         this.pad = null;
     }
     init(data){
     }
     preload(){   
-        this.load.image('tiles', 'assets/tileset_placeholder.jpg');
-        this.load.tilemapTiledJSON('map_1_placeholder', 'map_1_placeholder.json');
-        this.load.spritesheet('player', 'assets/player_spritesheet.png', {frameWidth: 32, frameHeight: 32});
-        this.load.image('saphir', 'assets/gem_2.png'); 
-        this.load.image('ennemi_1', 'assets/ennemi_1.png');
-        this.load.image('chest', 'assets/chest.png');
-        this.load.spritesheet('player', 'assets/player_spritesheet.png', {frameWidth: 32, frameHeight: 32});
-        this.load.spritesheet('swing', 'assets/swing_spritesheet.png', {frameWidth: 24, frameHeight: 24});
-        this.load.image('full_heart', 'assets/full_heart.png');
-        this.load.image('empty_heart', 'assets/empty_heart.png');
-        this.load.image('sword_icon', 'assets/sword_icon.png');
-        this.load.image('dash_icon', 'assets/dash_icon_2.png');
-        this.load.image('stone_circle', 'assets/stone_circle.png');
-        this.load.image('lock', 'assets/lock.png');
-        this.load.image('tile_green', 'assets/tile_green.jpg');
-        this.load.image('flute', 'assets/flute.png');
+        this.load.tilemapTiledJSON('map_4_placeholder', 'map_4_placeholder.json');
     }
     create(){
         
         //map
-        const map = this.make.tilemap({key: 'map_1_placeholder'});
+        const map = this.make.tilemap({key: 'map_4_placeholder'});
         const tileset = map.addTilesetImage('tileset_placeholder', 'tiles');
-        const terrain = map.createLayer('terrain', tileset, 0, 0);
-        const bloquant = map.createLayer('bloquant', tileset, 0, 0);
-        const zone = map.createLayer('zone', tileset, 0, 0);
+        const terrain = map.createLayer('terrain', tileset);
+        const lettres = map.createLayer('lettres', tileset);
+        const bloquant = map.createLayer('bloquant', tileset);
+        const zone = map.createLayer('zone', tileset);
+        //const murObjects = map.getObjectLayer('mur').objects
+        const itemObjects = map.getObjectLayer('item').objects
+        const coffreObjects = map.getObjectLayer('coffre').objects
 
         bloquant.setCollisionByExclusion(-1, true);
         zone.setCollisionByExclusion(-1, true);
 
         //sprites
-        player = this.physics.add.sprite(300, 300, 'player');
+        items = this.physics.add.group();
         
-        full_heart_1 = this.add.sprite(50,50, 'full_heart');
-        full_heart_2 = this.add.sprite(100,50, 'full_heart');
-        full_heart_3 = this.add.sprite(150,50, 'full_heart');
-        full_heart_4 = this.add.sprite(200,50, 'full_heart');
-        full_heart_5 = this.add.sprite(250,50, 'full_heart');
+        coffres = this.physics.add.group();
+        
+        murs = this.physics.add.group();
+        green_tiles = this.physics.add.group();
+        new_mur_1 = murs.create(1152+32, 2048-32, 'lock').setImmovable(true);
+        new_mur_2 = murs.create(1216+32, 2048-32, 'lock').setImmovable(true);
+        
+        player = this.physics.add.sprite(640, 2470, 'player');
+        
+        full_heart_1 = this.add.sprite(50,50, 'full_heart').setScrollFactor(0);
+        full_heart_2 = this.add.sprite(100,50, 'full_heart').setScrollFactor(0);
+        full_heart_3 = this.add.sprite(150,50, 'full_heart').setScrollFactor(0);
+        full_heart_4 = this.add.sprite(200,50, 'full_heart').setScrollFactor(0);
+        full_heart_5 = this.add.sprite(250,50, 'full_heart').setScrollFactor(0);
         
         empty_heart_1 = this.add.sprite(50,50, 'empty_heart').setVisible(false);
         empty_heart_2 = this.add.sprite(100,50, 'empty_heart').setVisible(false);
         empty_heart_3 = this.add.sprite(150,50, 'empty_heart').setVisible(false);
         empty_heart_4 = this.add.sprite(200,50, 'empty_heart').setVisible(false);
         empty_heart_5 = this.add.sprite(250,50, 'empty_heart').setVisible(false);
+        empty_heart_1.setScrollFactor(0);
+        empty_heart_2.setScrollFactor(0);
+        empty_heart_3.setScrollFactor(0);
+        empty_heart_4.setScrollFactor(0);
+        empty_heart_5.setScrollFactor(0);
+        
         
         saphirs_icon = this.add.sprite(350, 50, 'saphir').setScale(0.5);
         saphirs_icon.setScrollFactor(0);
-
-        
+        saphirs = this.physics.add.group({
+            setScrollFactor : 0
+        });
         saphirs_compte = this.add.text(370, 35, nombre_saphir, { fontSize: '32px', fill: '#FFF' }).setScrollFactor(0);
-        
-        swing = this.physics.add.group();
         
         sword_icon = this.physics.add.sprite(50, 600, 'sword_icon');
         sword_icon.setScale(2);
@@ -132,27 +82,85 @@ class SceneOne extends Phaser.Scene{
         }
         flute.setScrollFactor(0);
         
+        swing = this.physics.add.group();
         //collisions et overlaps
         this.physics.add.collider(player, bloquant);
+        this.physics.add.collider(player, coffres, collecteCoffre, null, this);
         this.physics.add.overlap(player, zone, changementZone, null, this);
+        this.physics.add.collider(player, murs);
+        this.physics.add.overlap(player, items, motDePasse, null, this);
 
+        for (const item of itemObjects){
+            items.create(item.x, item.y, 'stone_circle')
+                .setPosition(item.x+32, item.y-32)
+                .setScale(1)
+        }
         
-        //changement de scene vers scene 2
+        for (const coffre of coffreObjects){
+            coffres.create(coffre.x, coffre.y, 'chest')
+                .setPosition(coffre.x+32, coffre.y-32)
+                .setScale(1)
+        }
+        
+        /*for (const mur of murObjects){
+            murs.create(mur.x, mur.y, 'lock')
+                .setPosition(mur.x+32, mur.y-32)
+                .setScale(1)
+                .setImmovable(true)
+        }*/
+        
+        function collecteCoffre(player, coffres){
+            coffres.destroy();
+            hasFlute = true;
+            flute.setVisible(true);
+        }
+        //changement de scene vers scene 1
         function changementZone(player, zone){
-            if (player.y >= 730 && player.x >= 400 && player.x <= 560){
+            if (player.x <= 70){
                 //player.body.stop();
-                this.scene.start("sceneTwo");
-                console.log("changement");
+                this.scene.start("sceneOne");
             }
-            if (player.x >= 912 && player.x <= 944 && player.y >= 336 && player.y <= 380){
-                this.scene.start("sceneThree");
+        }
+        
+        function motDePasse(player, items){
+            if (password == 0){
+                if (player.x >= 525 && player.x <= 560 && player.y <= 433 && player.y >= 398){
+                    items.destroy()
+                    password = 1;
+                }
             }
-            if (player.x >= 1160){
-                this.scene.start("sceneFour");
+            if (password == 1){
+                if (player.y >= 1035 && player.y <= 1070 && player.x >= 1295 && player.x <= 1325 || player.y >= 783 && player.y <= 816 && player.x >= 2255 && player.x <= 2290){
+                    reformeMdp(512, 448);
+                    password = 0;
+                }
+                else if(player.x >= 2960 && player.x <= 2995 && player.y >= 1103 && player.y <= 1136){
+                    items.destroy();
+                    password = 2;
+                }
             }
-            if (player.y <= 70){
-                this.scene.start("sceneFive");
+            if (password == 2){
+                if(player.y >= 783 && player.y <= 816 && player.x >= 2255 && player.x <= 2290){
+                    reformeMdp(512, 448);
+                    reformeMdp(2944, 1152);
+                    password = 0;
+                }
+                else if(player.y >= 1035 && player.y <= 1070 && player.x >= 1295 && player.x <= 1325){
+                    items.destroy();
+                    password = 3;
+                }
             }
+            if (password == 3){
+                if (player.y >= 783 && player.y <= 816 && player.x >= 2255 && player.x <= 2290){
+                    items.destroy();
+                    new_mur_1.destroy();
+                    new_mur_2.destroy();
+                    new_mur_3 = green_tiles.create(1152+32, 2048-32, 'tile_green').setImmovable(true);
+                    new_mur_4 = green_tiles.create(1216+32, 2048-32, 'tile_green').setImmovable(true);
+                    password = 4;
+                }
+            }
+            
         }
         
         
@@ -219,21 +227,36 @@ class SceneOne extends Phaser.Scene{
         });
         
         //manette
-        if (this.input.gamepad.total === 0){
-            this.input.gamepad.once('connected', function (pad, button, index) {
-                paddle = pad;
-                padConnected = true;
-            }); 
-        }
-        else {
-            paddle = this.input.gamepad.pad1;
-        }
+        paddle = this.input.gamepad.pad1;
+        
+        //camera
+        this.cameras.main.startFollow(player);
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
             
     }
     
     update(){
-            
             //console.log(game.loop.actualFps);    
+            /*if (gotSword == true){
+                sword_icon.setVisible(true);
+            }*/
+        
+            /*if (password == 4){
+                murs.setVisible(false);
+                murs.setImmovable(false);
+            }  */  
+        
+            if (canDash){
+                if (keys.shift.isDown && !justDashed || paddle.B && !justDashed){
+                    justDashed = true;
+                    dash = 3;
+                    setTimeout(function(){dash = 1}, 600);
+                }
+                if (keys.shift.isUp && !paddle.B){
+                    justDashed = false;
+                }
+            }
+        
             if (player_hp == 4){
                 full_heart_5.setVisible(false);
                 empty_heart_5.setVisible(true);
@@ -273,19 +296,6 @@ class SceneOne extends Phaser.Scene{
                 empty_heart_2.setVisible(true);
                 full_heart_1.setVisible(false);
                 empty_heart_1.setVisible(true);
-            }    
-        
-            //mise à jour du compteur de saphirs
-            saphirs_compte.setText(nombre_saphir);
-            if (canDash){
-                if (keys.shift.isDown && !justDashed || paddle.B && !justDashed){
-                    justDashed = true;
-                    dash = 3;
-                    setTimeout(function(){dash = 1}, 600);
-                }
-                if (keys.shift.isUp && !paddle.B){
-                    justDashed = false;
-                }
             }
         
             //controles clavier
@@ -464,8 +474,12 @@ class SceneOne extends Phaser.Scene{
                     }
                 }
             }
-        }
     }
+}
 function attaque(x, y){
     newSwing = swing.create(player.x + x, player.y + y, 'swing');
+}
+
+function reformeMdp(x, y){
+    newItem = items.create(x+32, y-32, 'stone_circle');
 }

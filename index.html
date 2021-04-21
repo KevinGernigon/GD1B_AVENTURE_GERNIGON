@@ -3,9 +3,12 @@
 <head> 
     <meta charset="UTF-8" />
     <title>test</title>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.54.0/dist/phaser.js"></script>
     <script src="SceneOne.js"></script>
     <script src="SceneTwo.js"></script>
+    <script src="SceneThree.js"></script>
+    <script src="SceneFour.js"></script>
+    <script src="SceneFive.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -21,13 +24,16 @@ var config = {
     parent: "game",
     width: 1216,
     height: 768,
+    input: {
+        gamepad : true
+    },
     physics: {
         default: 'arcade',
         arcade: {
             debug: true
         }
     },
-    scene: [SceneOne, SceneTwo]
+    scene: [SceneOne, SceneTwo, SceneThree, SceneFour, SceneFive]
 };
 
 var game = new Phaser.Game(config);
