@@ -20,6 +20,7 @@ class SceneFive extends Phaser.Scene{
         //const murObjects = map.getObjectLayer('mur').objects
         const itemObjects = map.getObjectLayer('item').objects
         const coffreObjects = map.getObjectLayer('coffre').objects
+        const ennemisObjects = map.getObjectLayer('ennemis').objects;
 
         bloquant.setCollisionByExclusion(-1, true);
         zone.setCollisionByExclusion(-1, true);
@@ -33,6 +34,47 @@ class SceneFive extends Phaser.Scene{
         green_tiles = this.physics.add.group();
         new_mur_1 = murs.create(1152+32, 2048-32, 'lock').setImmovable(true);
         new_mur_2 = murs.create(1216+32, 2048-32, 'lock').setImmovable(true);
+        
+        function motDePasse(player, items){
+            if (password == 0){
+                if (player.x >= 525 && player.x <= 560 && player.y <= 433 && player.y >= 398){
+                    items.destroy()
+                    password = 1;
+                }
+            }
+            if (password == 1){
+                if (player.y >= 1035 && player.y <= 1070 && player.x >= 1295 && player.x <= 1325 || player.y >= 783 && player.y <= 816 && player.x >= 2255 && player.x <= 2290){
+                    reformeMdp(512, 448);
+                    password = 0;
+                }
+                else if(player.x >= 2960 && player.x <= 2995 && player.y >= 1103 && player.y <= 1136){
+                    items.destroy();
+                    password = 2;
+                }
+            }
+            if (password == 2){
+                if(player.y >= 783 && player.y <= 816 && player.x >= 2255 && player.x <= 2290){
+                    reformeMdp(512, 448);
+                    reformeMdp(2944, 1152);
+                    password = 0;
+                }
+                else if(player.y >= 1035 && player.y <= 1070 && player.x >= 1295 && player.x <= 1325){
+                    items.destroy();
+                    password = 3;
+                }
+            }
+            if (password == 3){
+                if (player.y >= 783 && player.y <= 816 && player.x >= 2255 && player.x <= 2290){
+                    items.destroy();
+                    new_mur_1.destroy();
+                    new_mur_2.destroy();
+                    new_mur_3 = green_tiles.create(1152+32, 2048-32, 'tile_green').setImmovable(true);
+                    new_mur_4 = green_tiles.create(1216+32, 2048-32, 'tile_green').setImmovable(true);
+                    password = 4;
+                }
+            }
+            
+        }
         
         player = this.physics.add.sprite(640, 2470, 'player');
         
@@ -83,12 +125,23 @@ class SceneFive extends Phaser.Scene{
         flute.setScrollFactor(0);
         
         swing = this.physics.add.group();
+        
+        ennemis = this.physics.add.group();
+        
+        for (const ennemi of ennemisObjects){
+            ennemis.create(ennemi.x, ennemi.y, 'ennemi_1')
+                .setScale(0.2)
+        }
+        
         //collisions et overlaps
         this.physics.add.collider(player, bloquant);
         this.physics.add.collider(player, coffres, collecteCoffre, null, this);
         this.physics.add.overlap(player, zone, changementZone, null, this);
         this.physics.add.collider(player, murs);
         this.physics.add.overlap(player, items, motDePasse, null, this);
+        this.physics.add.collider(ennemis, bloquant);
+        this.physics.add.collider(player, ennemis, hitOnPlayer, null, this);
+        this.physics.add.overlap(swing, ennemis, cutCut, null, this);
 
         for (const item of itemObjects){
             items.create(item.x, item.y, 'stone_circle')
@@ -119,50 +172,30 @@ class SceneFive extends Phaser.Scene{
             if (player.y >= 2510){
                 //player.body.stop();
                 password = 0;
+                moving = false;
                 this.scene.start("sceneOne");
             }
         }
         
-        function motDePasse(player, items){
-            if (password == 0){
-                if (player.x >= 525 && player.x <= 560 && player.y <= 433 && player.y >= 398){
-                    items.destroy()
-                    password = 1;
-                }
-            }
-            if (password == 1){
-                if (player.y >= 1035 && player.y <= 1070 && player.x >= 1295 && player.x <= 1325 || player.y >= 783 && player.y <= 816 && player.x >= 2255 && player.x <= 2290){
-                    reformeMdp(512, 448);
-                    password = 0;
-                }
-                else if(player.x >= 2960 && player.x <= 2995 && player.y >= 1103 && player.y <= 1136){
-                    items.destroy();
-                    password = 2;
-                }
-            }
-            if (password == 2){
-                if(player.y >= 783 && player.y <= 816 && player.x >= 2255 && player.x <= 2290){
-                    reformeMdp(512, 448);
-                    reformeMdp(2944, 1152);
-                    password = 0;
-                }
-                else if(player.y >= 1035 && player.y <= 1070 && player.x >= 1295 && player.x <= 1325){
-                    items.destroy();
-                    password = 3;
-                }
-            }
-            if (password == 3){
-                if (player.y >= 783 && player.y <= 816 && player.x >= 2255 && player.x <= 2290){
-                    items.destroy();
-                    new_mur_1.destroy();
-                    new_mur_2.destroy();
-                    new_mur_3 = green_tiles.create(1152+32, 2048-32, 'tile_green').setImmovable(true);
-                    new_mur_4 = green_tiles.create(1216+32, 2048-32, 'tile_green').setImmovable(true);
-                    password = 4;
-                }
-            }
-            
+        //coup d'épée
+        function cutCut(swing, ennemis){
+            //console.log("cut");
+            ennemis.destroy();
+            newSaphir = saphirs.create(ennemis.x, ennemis.y, 'saphir').setScale(0.3);
+            newSaphir.setAcceleration(0, -250);
+            setTimeout(function(){newSaphir.setAcceleration(0,200)}, 300);
+            setTimeout(function(){newSaphir.setAcceleration(0,0); newSaphir.setVelocityY(0)}, 1200);
         }
+        
+        //perte de vie quand un monstre est touché et frame d'invincibilité
+        function hitOnPlayer(player, ennemis){
+            if (invincible == false){
+                player_hp = player_hp - 1;
+                invincible = true;
+                setTimeout(function(){invincible = false}, 1000);
+            }
+        }
+        
         
         
         //animations joueur
@@ -495,6 +528,27 @@ class SceneFive extends Phaser.Scene{
                     }
                 }
             }
+        //mouvement des ennemis
+        for (const ennemi of ennemis.children.entries){
+            if(!hasFlute){
+                if (ennemi.y <= 2073){
+                    ennemi.setVelocityY(100);
+                    console.log('blocked up');
+                }
+                else if (ennemi.y >= 2470){
+                    ennemi.setVelocityY(-100);
+                    console.log('blocked down');
+                }
+                else if (moving == false){
+                    ennemis.setVelocityY(-100);
+                    moving = true;
+                }
+            }
+            else{
+                ennemi.setVelocity(0);
+                ennemi.setTint(2E2);
+            }
+        }
     }
 }
 function attaque(x, y){

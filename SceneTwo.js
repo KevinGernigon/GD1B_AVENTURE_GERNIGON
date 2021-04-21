@@ -1,6 +1,3 @@
-var moving = false;
-
-
 class SceneTwo extends Phaser.Scene{
     constructor(){
         super("sceneTwo");
@@ -155,6 +152,7 @@ class SceneTwo extends Phaser.Scene{
         function changementZone(player, zone){
             if (player.y <= 60 && player.x >= 400 && player.x <= 560){
                 //player.body.stop();
+                moving = false;
                 this.scene.start("sceneOne");
                 console.log("changement");
             }

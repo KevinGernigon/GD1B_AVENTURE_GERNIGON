@@ -51,6 +51,8 @@ var new_mur_3;
 var new_mur_4;
 var green_tiles;
 
+var moving = false;
+
 class SceneOne extends Phaser.Scene{
     constructor(){
         super("sceneOne");
@@ -233,6 +235,9 @@ class SceneOne extends Phaser.Scene{
     
     update(){
             
+            if (moving == true){
+                moving = false;
+            }
             //console.log(game.loop.actualFps);    
             if (player_hp == 4){
                 full_heart_5.setVisible(false);
