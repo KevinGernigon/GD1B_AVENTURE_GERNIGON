@@ -116,7 +116,7 @@ class SceneFive extends Phaser.Scene{
         }
         //changement de scene vers scene 1
         function changementZone(player, zone){
-            if (player.x <= 70){
+            if (player.y >= 2510){
                 //player.body.stop();
                 this.scene.start("sceneOne");
             }
