@@ -278,16 +278,27 @@ class SceneOne extends Phaser.Scene{
             //mise à jour du compteur de saphirs
             saphirs_compte.setText(nombre_saphir);
             if (canDash){
-                if (keys.shift.isDown && !justDashed || paddle.B && !justDashed){
-                    justDashed = true;
-                    dash = 3;
-                    setTimeout(function(){dash = 1}, 600);
+                if (padConnected){
+                    if (keys.shift.isDown && !justDashed || paddle.B && !justDashed){
+                        justDashed = true;
+                        dash = 3;
+                        setTimeout(function(){dash = 1}, 600);
+                    }
+                    if (keys.shift.isUp && !paddle.B){
+                        justDashed = false;
+                    }
                 }
-                if (keys.shift.isUp && !paddle.B){
-                    justDashed = false;
+                if (!padConnected){
+                    if (keys.shift.isDown && !justDashed){
+                        justDashed = true;
+                        dash = 3;
+                        setTimeout(function(){dash = 1}, 600);
+                    }
+                    if (keys.shift.isUp){
+                        justDashed = false;
+                    }
                 }
             }
-        
             //controles clavier
             if (!canSwing){
             //controles clavier

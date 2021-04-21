@@ -156,7 +156,15 @@ class SceneFour extends Phaser.Scene{
         });
         
         //manette
-        paddle = this.input.gamepad.pad1;
+        if (this.input.gamepad.total === 0){
+            this.input.gamepad.once('connected', function (pad, button, index) {
+                paddle = pad;
+                padConnected = true;
+            }); 
+        }
+        else {
+            paddle = this.input.gamepad.pad1;
+        }
             
     }
     
@@ -166,13 +174,25 @@ class SceneFour extends Phaser.Scene{
                 sword_icon.setVisible(true);
             }*/
             if (canDash){
-                if (keys.shift.isDown && !justDashed || paddle.B && !justDashed){
-                    justDashed = true;
-                    dash = 3;
-                    setTimeout(function(){dash = 1}, 600);
+                if (padConnected){
+                    if (keys.shift.isDown && !justDashed || paddle.B && !justDashed){
+                        justDashed = true;
+                        dash = 3;
+                        setTimeout(function(){dash = 1}, 600);
+                    }
+                    if (keys.shift.isUp && !paddle.B){
+                        justDashed = false;
+                    }
                 }
-                if (keys.shift.isUp && !paddle.B){
-                    justDashed = false;
+                if (!padConnected){
+                    if (keys.shift.isDown && !justDashed){
+                        justDashed = true;
+                        dash = 3;
+                        setTimeout(function(){dash = 1}, 600);
+                    }
+                    if (keys.shift.isUp){
+                        justDashed = false;
+                    }
                 }
             }
         

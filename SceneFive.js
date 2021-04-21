@@ -118,6 +118,7 @@ class SceneFive extends Phaser.Scene{
         function changementZone(player, zone){
             if (player.y >= 2510){
                 //player.body.stop();
+                password = 0;
                 this.scene.start("sceneOne");
             }
         }
@@ -227,7 +228,15 @@ class SceneFive extends Phaser.Scene{
         });
         
         //manette
-        paddle = this.input.gamepad.pad1;
+        if (this.input.gamepad.total === 0){
+            this.input.gamepad.once('connected', function (pad, button, index) {
+                paddle = pad;
+                padConnected = true;
+            }); 
+        }
+        else {
+            paddle = this.input.gamepad.pad1;
+        }
         
         //camera
         this.cameras.main.startFollow(player);
@@ -247,13 +256,25 @@ class SceneFive extends Phaser.Scene{
             }  */  
         
             if (canDash){
-                if (keys.shift.isDown && !justDashed || paddle.B && !justDashed){
-                    justDashed = true;
-                    dash = 3;
-                    setTimeout(function(){dash = 1}, 600);
+                if (padConnected){
+                    if (keys.shift.isDown && !justDashed || paddle.B && !justDashed){
+                        justDashed = true;
+                        dash = 3;
+                        setTimeout(function(){dash = 1}, 600);
+                    }
+                    if (keys.shift.isUp && !paddle.B){
+                        justDashed = false;
+                    }
                 }
-                if (keys.shift.isUp && !paddle.B){
-                    justDashed = false;
+                if (!padConnected){
+                    if (keys.shift.isDown && !justDashed){
+                        justDashed = true;
+                        dash = 3;
+                        setTimeout(function(){dash = 1}, 600);
+                    }
+                    if (keys.shift.isUp){
+                        justDashed = false;
+                    }
                 }
             }
         
