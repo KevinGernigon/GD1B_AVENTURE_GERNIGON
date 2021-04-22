@@ -24,7 +24,7 @@ class SceneTwo extends Phaser.Scene{
         bloquant.setCollisionByExclusion(-1, true);
 
         //sprites
-        player = this.physics.add.sprite(300, 300, 'player');
+        player = this.physics.add.sprite(485, 85, 'player');
         
         full_heart_1 = this.add.sprite(50,50, 'full_heart');
         full_heart_2 = this.add.sprite(100,50, 'full_heart');
@@ -152,6 +152,8 @@ class SceneTwo extends Phaser.Scene{
         function changementZone(player, zone){
             if (player.y <= 60 && player.x >= 400 && player.x <= 560){
                 //player.body.stop();
+                position_x = 470;
+                position_y = 680;
                 moving = false;
                 this.scene.start("sceneOne");
             }

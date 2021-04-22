@@ -54,6 +54,9 @@ var green_tiles;
 var moving = false;
 var canCollect;
 
+var position_x = 300;
+var position_y = 300;
+
 class SceneOne extends Phaser.Scene{
     constructor(){
         super("sceneOne");
@@ -92,7 +95,7 @@ class SceneOne extends Phaser.Scene{
         zone.setCollisionByExclusion(-1, true);
 
         //sprites
-        player = this.physics.add.sprite(300, 300, 'player');
+        player = this.physics.add.sprite(position_x, position_y, 'player');
         
         full_heart_1 = this.add.sprite(50,50, 'full_heart');
         full_heart_2 = this.add.sprite(100,50, 'full_heart');

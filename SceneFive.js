@@ -142,6 +142,7 @@ class SceneFive extends Phaser.Scene{
         this.physics.add.collider(ennemis, bloquant);
         this.physics.add.collider(player, ennemis, hitOnPlayer, null, this);
         this.physics.add.overlap(swing, ennemis, cutCut, null, this);
+        this.physics.add.overlap(player, saphirs, collecteSaphir, null, this);
 
         for (const item of itemObjects){
             items.create(item.x, item.y, 'stone_circle')
@@ -171,6 +172,8 @@ class SceneFive extends Phaser.Scene{
         function changementZone(player, zone){
             if (player.y >= 2510){
                 //player.body.stop();
+                position_x = 635;
+                position_y = 85;
                 password = 0;
                 moving = false;
                 this.scene.start("sceneOne");
@@ -194,6 +197,14 @@ class SceneFive extends Phaser.Scene{
                 player_hp = player_hp - 1;
                 invincible = true;
                 setTimeout(function(){invincible = false}, 1000);
+            }
+        }
+        
+        //la thune
+        function collecteSaphir(player, saphirs){
+            if (canCollect){
+                nombre_saphir = nombre_saphir +1;
+                saphirs.destroy();
             }
         }
         
@@ -288,6 +299,7 @@ class SceneFive extends Phaser.Scene{
                 murs.setVisible(false);
                 murs.setImmovable(false);
             }  */  
+            saphirs_compte.setText(nombre_saphir);
         
             if (canDash){
                 if (padConnected){
