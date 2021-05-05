@@ -435,7 +435,7 @@ class SceneTwo extends Phaser.Scene{
                     if (keys.down.isDown && keys.space.isDown && keys.right.isUp && keys.up.isUp && keys.left.isUp){
                         canSwing = false;
                         player.setVelocity(0);
-                        attaque(0,80);
+                        attaque(0,32);
                         newSwing.anims.play('swing_down', true);
                         setTimeout(function(){newSwing.destroy()}, 200);
                         setTimeout(function(){canSwing = true}, 200);
