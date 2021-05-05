@@ -363,6 +363,9 @@ class SceneFive extends Phaser.Scene{
                 empty_heart_2.setVisible(true);
                 full_heart_1.setVisible(false);
                 empty_heart_1.setVisible(true);
+                this.physics.pause();
+                player.setTint(0xff0000);
+                this.add.text(200, 280, 'You died, press F5 to try again !', { font: "48px Arial Black", fill: "#000" }).setScrollFactor(0);
             }
         
             //controles clavier
