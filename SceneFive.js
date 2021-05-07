@@ -193,7 +193,7 @@ class SceneFive extends Phaser.Scene{
         
         //perte de vie quand un monstre est touché et frame d'invincibilité
         function hitOnPlayer(player, ennemis){
-            if (invincible == false){
+            if (invincible == false && !hasFlute){
                 player_hp = player_hp - 1;
                 invincible = true;
                 setTimeout(function(){invincible = false}, 1000);
@@ -207,60 +207,7 @@ class SceneFive extends Phaser.Scene{
                 saphirs.destroy();
             }
         }
-        
-        
-        
-        //animations joueur
-        this.anims.create({
-        key: 'right',
-        frames: this.anims.generateFrameNumbers('player', { start: 1, end: 1 }),
-        frameRate: 10,
-        repeat: -1
-        });
-        this.anims.create({
-        key: 'left',
-        frames: this.anims.generateFrameNumbers('player', { start: 2, end: 2 }),
-        frameRate: 10,
-        repeat: -1
-        });
-        this.anims.create({
-        key: 'up',
-        frames: this.anims.generateFrameNumbers('player', { start: 0, end: 0 }),
-        frameRate: 10,
-        repeat: -1
-        });
-        this.anims.create({
-        key: 'down',
-        frames: this.anims.generateFrameNumbers('player', { start: 3, end: 3 }),
-        frameRate: 10,
-        repeat: -1
-        });
-        
-        this.anims.create({
-        key: 'swing_right',
-        frames: this.anims.generateFrameNumbers('swing', { start: 1, end: 1 }),
-        frameRate: 10,
-        repeat: -1
-        });
-        this.anims.create({
-        key: 'swing_left',
-        frames: this.anims.generateFrameNumbers('swing', { start: 2, end: 2 }),
-        frameRate: 10,
-        repeat: -1
-        });
-        this.anims.create({
-        key: 'swing_up',
-        frames: this.anims.generateFrameNumbers('swing', { start: 0, end: 0 }),
-        frameRate: 10,
-        repeat: -1
-        });
-        this.anims.create({
-        key: 'swing_down',
-        frames: this.anims.generateFrameNumbers('swing', { start: 3, end: 3}),
-        frameRate: 10,
-        repeat: -1
-        });
-        
+
         
         //clavier
         keys = this.input.keyboard.addKeys({
@@ -372,54 +319,60 @@ class SceneFive extends Phaser.Scene{
             if (!canSwing){
             //controles clavier
                 if (!padConnected){
-                    if (keys.right.isDown){
+                    if (keys.right.isDown && keys.space.isUp && keys.up.isUp && keys.down.isUp){
                         player.setVelocityX(200 * dash);
                         player.anims.play('right', true);
                     }
-                    else if (keys.left.isDown){
+                    else if (keys.left.isDown && keys.space.isUp && keys.up.isUp && keys.down.isUp){
                         player.setVelocityX(-200 * dash);
                         player.anims.play('left', true);
                     }
                     else if (keys.right.isUp && keys.left.isUp){
                         player.setVelocityX(0);
                     }
-                    if (keys.up.isDown){
+                    if (keys.up.isDown && keys.space.isUp && keys.left.isUp && keys.right.isUp){
                         player.setVelocityY(-200 * dash);
                         player.anims.play('up', true);
                     }
-                    else if (keys.down.isDown){
+                    else if (keys.down.isDown && keys.space.isUp && keys.left.isUp && keys.right.isUp){
                         player.setVelocityY(200 * dash);
                         player.anims.play('down', true);
                     }
                     else if (keys.up.isUp && keys.down.isUp){
                         player.setVelocityY(0);
                     }
+                    if (keys.up.isUp && keys.down.isUp && keys.left.isUp && keys.right.isUp){
+                        player.anims.play('idle', true);
+                    }
                 }
 
                 //controles manette
                 if (padConnected){
 
-                    if(paddle.right || keys.right.isDown){
+                    if(paddle.right && !paddle.A && !paddle.up && !paddle.down || keys.right.isDown && keys.space.isUp && keys.up.isUp && keys.down.isUp){
                         player.setVelocityX(200 * dash);
                         player.anims.play('right', true);
                     }
-                    else if(paddle.left || keys.left.isDown){
+                    else if(paddle.left && !paddle.A && !paddle.up && !paddle.down|| keys.left.isDown && keys.space.isUp && keys.up.isUp && keys.down.isUp){
                         player.setVelocityX(-200 * dash);
                         player.anims.play('left', true);
                     }
                     else if(!paddle.right && !paddle.left || keys.right.isUp && keys.left.isUp){
                         player.setVelocityX(0);
                     }
-                    if(paddle.up || keys.up.isDown){
+                    if(paddle.up && !paddle.A && !paddle.left && !paddle.right || keys.up.isDown && keys.space.isUp && keys.left.isUp && keys.right.isUp){
                         player.setVelocityY(-200 * dash);
                         player.anims.play('up', true);
                     }
-                    else if(paddle.down || keys.down.isDown){
+                    else if(paddle.down && !paddle.A && !paddle.left && !paddle.right || keys.down.isDown && keys.space.isUp && keys.left.isUp && keys.right.isUp){
                         player.setVelocityY(200 * dash);
                         player.anims.play('down', true);
                     }
                     else if(!paddle.up && !paddle.down || keys.up.isUp && keys.down.isUp){
                         player.setVelocityY(0);
+                    }
+                    if (keys.up.isUp && keys.down.isUp && keys.left.isUp && keys.right.isUp && !paddle.up && !paddle.down && !paddle.left && !paddle.right){
+                        player.anims.play('idle', true);
                     }
                 }
             }
@@ -428,32 +381,35 @@ class SceneFive extends Phaser.Scene{
                 
                 //clavier
                 if (!padConnected){
-                    if (keys.right.isDown){
+                    if (keys.right.isDown && keys.space.isUp && keys.up.isUp && keys.down.isUp){
                         player.setVelocityX(200 * dash);
                         player.anims.play('right', true);
                     }
-                    else if (keys.left.isDown){
+                    else if (keys.left.isDown && keys.space.isUp && keys.up.isUp && keys.down.isUp){
                         player.setVelocityX(-200 * dash);
                         player.anims.play('left', true);
                     }
                     else if (keys.right.isUp && keys.left.isUp){
                         player.setVelocityX(0);
                     }
-                    if (keys.up.isDown){
+                    if (keys.up.isDown && keys.space.isUp && keys.left.isUp && keys.right.isUp){
                         player.setVelocityY(-200 * dash);
                         player.anims.play('up', true);
                     }
-                    else if (keys.down.isDown){
+                    else if (keys.down.isDown && keys.space.isUp && keys.left.isUp && keys.right.isUp){
                         player.setVelocityY(200 * dash);
                         player.anims.play('down', true);
                     }
                     else if (keys.up.isUp && keys.down.isUp){
                         player.setVelocityY(0);
                     }
+                    if (keys.up.isUp && keys.down.isUp && keys.left.isUp && keys.right.isUp){
+                        player.anims.play('idle', true);
+                    }
                     if (keys.left.isDown && keys.space.isDown && keys.right.isUp && keys.up.isUp && keys.down.isUp){
                         canSwing = false;
                         player.setVelocity(0);
-                        attaque(-32,0);
+                        attaque(-50,0);
                         newSwing.anims.play('swing_left', true);
                         setTimeout(function(){newSwing.destroy()}, 200);
                         setTimeout(function(){canSwing = true}, 200);
@@ -461,7 +417,7 @@ class SceneFive extends Phaser.Scene{
                     if (keys.right.isDown && keys.space.isDown && keys.left.isUp && keys.up.isUp && keys.down.isUp){
                         canSwing = false;
                         player.setVelocity(0);
-                        attaque(32,0);
+                        attaque(50,0);
                         newSwing.anims.play('swing_right', true);
                         setTimeout(function(){newSwing.destroy()}, 200);
                         setTimeout(function(){canSwing = true}, 200);
@@ -469,7 +425,7 @@ class SceneFive extends Phaser.Scene{
                     if (keys.up.isDown && keys.space.isDown && keys.right.isUp && keys.left.isUp && keys.down.isUp){
                         canSwing = false;
                         player.setVelocity(0);
-                        attaque(0,-32);
+                        attaque(0,-50);
                         newSwing.anims.play('swing_up', true);
                         setTimeout(function(){newSwing.destroy()}, 200);
                         setTimeout(function(){canSwing = true}, 200);
@@ -477,7 +433,7 @@ class SceneFive extends Phaser.Scene{
                     if (keys.down.isDown && keys.space.isDown && keys.right.isUp && keys.up.isUp && keys.left.isUp){
                         canSwing = false;
                         player.setVelocity(0);
-                        attaque(0,32);
+                        attaque(0,50);
                         newSwing.anims.play('swing_down', true);
                         setTimeout(function(){newSwing.destroy()}, 200);
                         setTimeout(function(){canSwing = true}, 200);
@@ -487,33 +443,36 @@ class SceneFive extends Phaser.Scene{
                 //manette
                 if (padConnected){
                 
-                    if(paddle.right || keys.right.isDown){
+                    if(paddle.right && keys.space.isUp && !paddle.up && !paddle.down || keys.right.isDown && keys.space.isUp && keys.up.isUp && keys.down.isUp){
                         player.setVelocityX(200 * dash);
                         player.anims.play('right', true);
                     }
-                    else if(paddle.left || keys.left.isDown){
+                    else if(paddle.left && keys.space.isUp && !paddle.up && !paddle.down || keys.left.isDown && keys.space.isUp && keys.up.isUp && keys.down.isUp){
                         player.setVelocityX(-200 * dash);
                         player.anims.play('left', true);
                     }
                     else if(!paddle.right && !paddle.left && keys.right.isUp && keys.left.isUp){
                         player.setVelocityX(0);
                     }
-                    if(paddle.up || keys.up.isDown){
+                    if(paddle.up && keys.space.isUp && !paddle.left && !paddle.right|| keys.up.isDown && keys.space.isUp && keys.left.isUp && keys.right.isUp){
                         player.setVelocityY(-200 * dash);
                         player.anims.play('up', true);
                     }
-                    else if(paddle.down || keys.down.isDown){
+                    else if(paddle.down && keys.space.isUp && !paddle.left && !paddle.right || keys.down.isDown && keys.space.isUp && keys.left.isUp && keys.right.isUp){
                         player.setVelocityY(200 * dash);
                         player.anims.play('down', true);
                     }
                     else if(!paddle.up && !paddle.down && keys.up.isUp && keys.down.isUp){
                         player.setVelocityY(0);
                     }
+                    if (keys.up.isUp && keys.down.isUp && keys.left.isUp && keys.right.isUp && !paddle.up && !paddle.down && !paddle.left && !paddle.right){
+                        player.anims.play('idle', true);
+                    }
 
                     if (keys.left.isDown && keys.space.isDown && keys.right.isUp && keys.up.isUp && keys.down.isUp && !paddle.right && !paddle.up && !paddle.down || paddle.left && paddle.A && keys.right.isUp && keys.up.isUp && keys.down.isUp && !paddle.right && !paddle.up && !paddle.down){
                         canSwing = false;
                         player.setVelocity(0);
-                        attaque(-32,0);
+                        attaque(-50,0);
                         newSwing.anims.play('swing_left', true);
                         setTimeout(function(){newSwing.destroy()}, 200);
                         setTimeout(function(){canSwing = true}, 200);
@@ -521,7 +480,7 @@ class SceneFive extends Phaser.Scene{
                     if (keys.right.isDown && keys.space.isDown && keys.left.isUp && keys.up.isUp && keys.down.isUp && !paddle.left && !paddle.up && !paddle.down|| paddle.right && paddle.A && keys.left.isUp && keys.up.isUp && keys.down.isUp && !paddle.left && !paddle.up && !paddle.down){
                         canSwing = false;
                         player.setVelocity(0);
-                        attaque(32,0);
+                        attaque(50,0);
                         newSwing.anims.play('swing_right', true);
                         setTimeout(function(){newSwing.destroy()}, 200);
                         setTimeout(function(){canSwing = true}, 200);
@@ -529,7 +488,7 @@ class SceneFive extends Phaser.Scene{
                     if (keys.up.isDown && keys.space.isDown && keys.right.isUp && keys.left.isUp && keys.down.isUp && !paddle.left && !paddle.right && !paddle.down || paddle.up && paddle.A && keys.right.isUp && keys.left.isUp && keys.down.isUp && !paddle.left && !paddle.right && !paddle.down){
                         canSwing = false;
                         player.setVelocity(0);
-                        attaque(0,-32);
+                        attaque(0,-50);
                         newSwing.anims.play('swing_up', true);
                         setTimeout(function(){newSwing.destroy()}, 200);
                         setTimeout(function(){canSwing = true}, 200);
@@ -537,7 +496,7 @@ class SceneFive extends Phaser.Scene{
                     if (keys.down.isDown && keys.space.isDown && keys.right.isUp && keys.up.isUp && keys.left.isUp && !paddle.left && !paddle.right && !paddle.up || paddle.down && paddle.A && keys.right.isUp && keys.up.isUp && keys.left.isUp && !paddle.left && !paddle.right && !paddle.up){
                         canSwing = false;
                         player.setVelocity(0);
-                        attaque(0,32);
+                        attaque(0,50);
                         newSwing.anims.play('swing_down', true);
                         setTimeout(function(){newSwing.destroy()}, 200);
                         setTimeout(function(){canSwing = true}, 200);
