@@ -57,7 +57,7 @@ var canCollect;
 var position_x = 300;
 var position_y = 300;
 
-var ecran_controles;
+
 var surEcranTitre = false;
 
 var justStarted = true;
@@ -87,7 +87,7 @@ class SceneOne extends Phaser.Scene{
         this.load.image('lock', 'assets/lock.png');
         this.load.image('tile_green', 'assets/tile_green.jpg');
         this.load.image('flute', 'assets/flute.png');
-        this.load.image('controles', 'assets/ecran_controles.png');
+
     }
     create(){
         

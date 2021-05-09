@@ -191,6 +191,8 @@ class SceneTwo extends Phaser.Scene{
             setTimeout(function(){canCollect = true}, 3400);
 
         }
+        
+        
             
         
         ecran_controles = this.physics.add.sprite(608, 384, 'controles').setVisible(false).setScale(1.1);
