@@ -26,19 +26,19 @@ class SceneTwo extends Phaser.Scene{
         //sprites
         player = this.physics.add.sprite(485, 85, 'player');
         
-        full_heart_1 = this.add.sprite(50,50, 'full_heart');
-        full_heart_2 = this.add.sprite(100,50, 'full_heart');
-        full_heart_3 = this.add.sprite(150,50, 'full_heart');
-        full_heart_4 = this.add.sprite(200,50, 'full_heart');
-        full_heart_5 = this.add.sprite(250,50, 'full_heart');
+        full_heart_1 = this.add.sprite(50,35, 'full_heart');
+        full_heart_2 = this.add.sprite(100,35, 'full_heart');
+        full_heart_3 = this.add.sprite(150,35, 'full_heart');
+        full_heart_4 = this.add.sprite(200,35, 'full_heart');
+        full_heart_5 = this.add.sprite(250,35, 'full_heart');
         
-        empty_heart_1 = this.add.sprite(50,50, 'empty_heart').setVisible(false);
-        empty_heart_2 = this.add.sprite(100,50, 'empty_heart').setVisible(false);
-        empty_heart_3 = this.add.sprite(150,50, 'empty_heart').setVisible(false);
-        empty_heart_4 = this.add.sprite(200,50, 'empty_heart').setVisible(false);
-        empty_heart_5 = this.add.sprite(250,50, 'empty_heart').setVisible(false);
+        empty_heart_1 = this.add.sprite(50,35, 'empty_heart').setVisible(false);
+        empty_heart_2 = this.add.sprite(100,35, 'empty_heart').setVisible(false);
+        empty_heart_3 = this.add.sprite(150,35, 'empty_heart').setVisible(false);
+        empty_heart_4 = this.add.sprite(200,35, 'empty_heart').setVisible(false);
+        empty_heart_5 = this.add.sprite(250,35, 'empty_heart').setVisible(false);
         
-        saphirs_icon = this.add.sprite(350, 50, 'saphir').setScale(0.5);
+        saphirs_icon = this.add.sprite(350, 35, 'saphir').setScale(0.5);
          
         
         items = this.physics.add.group();
@@ -50,7 +50,7 @@ class SceneTwo extends Phaser.Scene{
         });
         
         
-        saphirs_compte = this.add.text(370, 35, nombre_saphir, { fontSize: '32px', fill: '#FFF' }).setScrollFactor(0);
+        saphirs_compte = this.add.text(370, 20, nombre_saphir, { fontSize: '32px', fill: '#FFF' }).setScrollFactor(0);
         
         swing = this.physics.add.group();
         
@@ -105,7 +105,8 @@ class SceneTwo extends Phaser.Scene{
             up : Phaser.Input.Keyboard.KeyCodes.UP,
             down: Phaser.Input.Keyboard.KeyCodes.DOWN,
             space: Phaser.Input.Keyboard.KeyCodes.SPACE,
-            shift: Phaser.Input.Keyboard.KeyCodes.SHIFT
+            shift: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+            escape : Phaser.Input.Keyboard.KeyCodes.ESC
         });
         
         //manette
@@ -192,11 +193,40 @@ class SceneTwo extends Phaser.Scene{
         }
             
         
-        
+        ecran_controles = this.physics.add.sprite(608, 384, 'controles').setVisible(false).setScale(1.1);
     }
      
     update(){
+        
+            //ecran_controles
+            if (padConnected){
+                if (keys.escape.isDown && surEcranTitre == false || paddle.X && surEcranTitre == false){
+                    setTimeout(function(){surEcranTitre = true}, 500);
+                    ecran_controles.setVisible(true);
+                    this.physics.pause();
+                }
+
+                if (keys.escape.isDown && surEcranTitre == true || paddle.X && surEcranTitre == true){
+                    setTimeout(function(){surEcranTitre = false}, 500);
+                    ecran_controles.setVisible(false);
+                    this.physics.resume();
+                }
+            }
             
+            if (!padConnected){
+                if (keys.escape.isDown && surEcranTitre == false){
+                    setTimeout(function(){surEcranTitre = true}, 500);
+                    ecran_controles.setVisible(true);
+                    this.physics.pause();
+                }
+
+                if (keys.escape.isDown && surEcranTitre == true){
+                    setTimeout(function(){surEcranTitre = false}, 500);
+                    ecran_controles.setVisible(false);
+                    this.physics.resume();
+                }
+            }
+        
             //gère la barre de vie
             if (player_hp == 4){
                 full_heart_5.setVisible(false);

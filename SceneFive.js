@@ -78,17 +78,17 @@ class SceneFive extends Phaser.Scene{
         
         player = this.physics.add.sprite(640, 2470, 'player');
         
-        full_heart_1 = this.add.sprite(50,50, 'full_heart').setScrollFactor(0);
-        full_heart_2 = this.add.sprite(100,50, 'full_heart').setScrollFactor(0);
-        full_heart_3 = this.add.sprite(150,50, 'full_heart').setScrollFactor(0);
-        full_heart_4 = this.add.sprite(200,50, 'full_heart').setScrollFactor(0);
-        full_heart_5 = this.add.sprite(250,50, 'full_heart').setScrollFactor(0);
+        full_heart_1 = this.add.sprite(50,35, 'full_heart').setScrollFactor(0);
+        full_heart_2 = this.add.sprite(100,35, 'full_heart').setScrollFactor(0);
+        full_heart_3 = this.add.sprite(150,35, 'full_heart').setScrollFactor(0);
+        full_heart_4 = this.add.sprite(200,35, 'full_heart').setScrollFactor(0);
+        full_heart_5 = this.add.sprite(250,35, 'full_heart').setScrollFactor(0);
         
-        empty_heart_1 = this.add.sprite(50,50, 'empty_heart').setVisible(false);
-        empty_heart_2 = this.add.sprite(100,50, 'empty_heart').setVisible(false);
-        empty_heart_3 = this.add.sprite(150,50, 'empty_heart').setVisible(false);
-        empty_heart_4 = this.add.sprite(200,50, 'empty_heart').setVisible(false);
-        empty_heart_5 = this.add.sprite(250,50, 'empty_heart').setVisible(false);
+        empty_heart_1 = this.add.sprite(50,35, 'empty_heart').setVisible(false);
+        empty_heart_2 = this.add.sprite(100,35, 'empty_heart').setVisible(false);
+        empty_heart_3 = this.add.sprite(150,35, 'empty_heart').setVisible(false);
+        empty_heart_4 = this.add.sprite(200,35, 'empty_heart').setVisible(false);
+        empty_heart_5 = this.add.sprite(250,35, 'empty_heart').setVisible(false);
         empty_heart_1.setScrollFactor(0);
         empty_heart_2.setScrollFactor(0);
         empty_heart_3.setScrollFactor(0);
@@ -96,12 +96,12 @@ class SceneFive extends Phaser.Scene{
         empty_heart_5.setScrollFactor(0);
         
         
-        saphirs_icon = this.add.sprite(350, 50, 'saphir').setScale(0.5);
+        saphirs_icon = this.add.sprite(350, 35, 'saphir').setScale(0.5);
         saphirs_icon.setScrollFactor(0);
         saphirs = this.physics.add.group({
             setScrollFactor : 0
         });
-        saphirs_compte = this.add.text(370, 35, nombre_saphir, { fontSize: '32px', fill: '#FFF' }).setScrollFactor(0);
+        saphirs_compte = this.add.text(370, 20, nombre_saphir, { fontSize: '32px', fill: '#FFF' }).setScrollFactor(0);
         
         sword_icon = this.physics.add.sprite(50, 600, 'sword_icon');
         sword_icon.setScale(2);
@@ -210,13 +210,14 @@ class SceneFive extends Phaser.Scene{
 
         
         //clavier
-        keys = this.input.keyboard.addKeys({
+       keys = this.input.keyboard.addKeys({
             left: Phaser.Input.Keyboard.KeyCodes.LEFT,
             right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
             up : Phaser.Input.Keyboard.KeyCodes.UP,
             down: Phaser.Input.Keyboard.KeyCodes.DOWN,
             space: Phaser.Input.Keyboard.KeyCodes.SPACE,
-            shift: Phaser.Input.Keyboard.KeyCodes.SHIFT
+            shift: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+            escape : Phaser.Input.Keyboard.KeyCodes.ESC
         });
         
         //manette
@@ -233,7 +234,8 @@ class SceneFive extends Phaser.Scene{
         //camera
         this.cameras.main.startFollow(player);
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-            
+          
+        ecran_controles = this.physics.add.sprite(608, 384, 'controles').setVisible(false).setScale(1.1);
     }
     
     update(){
@@ -246,6 +248,36 @@ class SceneFive extends Phaser.Scene{
                 murs.setVisible(false);
                 murs.setImmovable(false);
             }  */  
+        
+            //ecran_controles
+            if (padConnected){
+                if (keys.escape.isDown && surEcranTitre == false || paddle.X && surEcranTitre == false){
+                    setTimeout(function(){surEcranTitre = true}, 500);
+                    ecran_controles.setVisible(true);
+                    this.physics.pause();
+                }
+
+                if (keys.escape.isDown && surEcranTitre == true || paddle.X && surEcranTitre == true){
+                    setTimeout(function(){surEcranTitre = false}, 500);
+                    ecran_controles.setVisible(false);
+                    this.physics.resume();
+                }
+            }
+            
+            if (!padConnected){
+                if (keys.escape.isDown && surEcranTitre == false){
+                    setTimeout(function(){surEcranTitre = true}, 500);
+                    ecran_controles.setVisible(true);
+                    this.physics.pause();
+                }
+
+                if (keys.escape.isDown && surEcranTitre == true){
+                    setTimeout(function(){surEcranTitre = false}, 500);
+                    ecran_controles.setVisible(false);
+                    this.physics.resume();
+                }
+            }
+        
             saphirs_compte.setText(nombre_saphir);
         
             if (canDash){

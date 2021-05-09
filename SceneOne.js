@@ -57,6 +57,12 @@ var canCollect;
 var position_x = 300;
 var position_y = 300;
 
+var ecran_controles;
+var surEcranTitre = false;
+
+var justStarted = true;
+var textStart;
+
 class SceneOne extends Phaser.Scene{
     constructor(){
         super("sceneOne");
@@ -68,7 +74,7 @@ class SceneOne extends Phaser.Scene{
         this.load.image('tiles', 'assets/tileset_placeholder.jpg');
         this.load.image('real_tiles', 'assets/map_1_placeholder_v4.png');
         this.load.tilemapTiledJSON('map_1', 'map_1.json')
-        this.load.image('saphir', 'assets/gem_2.png'); 
+        this.load.image('saphir', 'assets/chip.png'); 
         this.load.image('ennemi_1', 'assets/ennemi_1.png');
         this.load.image('chest', 'assets/chest.png');
         this.load.spritesheet('player', 'assets/spritesheet_3.png', {frameWidth: 73, frameHeight: 71});
@@ -81,6 +87,7 @@ class SceneOne extends Phaser.Scene{
         this.load.image('lock', 'assets/lock.png');
         this.load.image('tile_green', 'assets/tile_green.jpg');
         this.load.image('flute', 'assets/flute.png');
+        this.load.image('controles', 'assets/ecran_controles.png');
     }
     create(){
         
@@ -105,23 +112,24 @@ class SceneOne extends Phaser.Scene{
         //sprites
         player = this.physics.add.sprite(position_x, position_y, 'player');
         
-        full_heart_1 = this.add.sprite(50,50, 'full_heart');
-        full_heart_2 = this.add.sprite(100,50, 'full_heart');
-        full_heart_3 = this.add.sprite(150,50, 'full_heart');
-        full_heart_4 = this.add.sprite(200,50, 'full_heart');
-        full_heart_5 = this.add.sprite(250,50, 'full_heart');
+        full_heart_1 = this.add.sprite(50,35, 'full_heart');
+        full_heart_2 = this.add.sprite(100,35, 'full_heart');
+        full_heart_3 = this.add.sprite(150,35, 'full_heart');
+        full_heart_4 = this.add.sprite(200,35, 'full_heart');
+        full_heart_5 = this.add.sprite(250,35, 'full_heart');
         
-        empty_heart_1 = this.add.sprite(50,50, 'empty_heart').setVisible(false);
-        empty_heart_2 = this.add.sprite(100,50, 'empty_heart').setVisible(false);
-        empty_heart_3 = this.add.sprite(150,50, 'empty_heart').setVisible(false);
-        empty_heart_4 = this.add.sprite(200,50, 'empty_heart').setVisible(false);
-        empty_heart_5 = this.add.sprite(250,50, 'empty_heart').setVisible(false);
+        empty_heart_1 = this.add.sprite(50,35, 'empty_heart').setVisible(false);
+        empty_heart_2 = this.add.sprite(100,35, 'empty_heart').setVisible(false);
+        empty_heart_3 = this.add.sprite(150,35, 'empty_heart').setVisible(false);
+        empty_heart_4 = this.add.sprite(200,35, 'empty_heart').setVisible(false);
+        empty_heart_5 = this.add.sprite(250,35, 'empty_heart').setVisible(false);
         
-        saphirs_icon = this.add.sprite(350, 50, 'saphir').setScale(0.5);
+        saphirs_icon = this.add.sprite(350, 35, 'saphir').setScale(0.5);
         saphirs_icon.setScrollFactor(0);
 
         
-        saphirs_compte = this.add.text(370, 35, nombre_saphir, { fontSize: '32px', fill: '#FFF' }).setScrollFactor(0);
+        saphirs_compte = this.add.text(380, 20, nombre_saphir, { fontSize: '32px', fill: '#FFF' }).setScrollFactor(0);
+        saphirs_compte = this.add.text(380, 20, nombre_saphir, { fontSize: '32px', fill: '#FFF' }).setScrollFactor(0);
         
         swing = this.physics.add.group();
         
@@ -234,7 +242,8 @@ class SceneOne extends Phaser.Scene{
             up : Phaser.Input.Keyboard.KeyCodes.UP,
             down: Phaser.Input.Keyboard.KeyCodes.DOWN,
             space: Phaser.Input.Keyboard.KeyCodes.SPACE,
-            shift: Phaser.Input.Keyboard.KeyCodes.SHIFT
+            shift: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+            escape : Phaser.Input.Keyboard.KeyCodes.ESC
         });
         
         //manette
@@ -247,11 +256,49 @@ class SceneOne extends Phaser.Scene{
         else {
             paddle = this.input.gamepad.pad1;
         }
-            
+        
+        textStart = this.add.text(200, 420, 'Press Escape at any time to see controls', { font: "40px Arial Black", fill: "#FFF" }).setScrollFactor(0);
+        ecran_controles = this.physics.add.sprite(608, 384, 'controles').setVisible(false).setScale(1.1);
     }
     
     update(){
             
+            if(justStarted == true){
+                setTimeout(function(){justStarted = false}, 4000);
+            }
+        
+            if (justStarted == false){
+                textStart.setText("");
+            }
+        
+            if (padConnected){
+                if (keys.escape.isDown && surEcranTitre == false || paddle.X && surEcranTitre == false){
+                    setTimeout(function(){surEcranTitre = true}, 500);
+                    ecran_controles.setVisible(true);
+                    this.physics.pause();
+                }
+
+                if (keys.escape.isDown && surEcranTitre == true || paddle.X && surEcranTitre == true){
+                    setTimeout(function(){surEcranTitre = false}, 500);
+                    ecran_controles.setVisible(false);
+                    this.physics.resume();
+                }
+            }
+            
+            if (!padConnected){
+                if (keys.escape.isDown && surEcranTitre == false){
+                    setTimeout(function(){surEcranTitre = true}, 500);
+                    ecran_controles.setVisible(true);
+                    this.physics.pause();
+                }
+
+                if (keys.escape.isDown && surEcranTitre == true){
+                    setTimeout(function(){surEcranTitre = false}, 500);
+                    ecran_controles.setVisible(false);
+                    this.physics.resume();
+                }
+            }
+        
             if (moving == true){
                 moving = false;
             }
